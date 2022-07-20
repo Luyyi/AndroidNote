@@ -192,5 +192,9 @@ public final class DefaultConstructorMarker {
 如用在网络请求状态上：
 
 ```kotlin
-
+sealed class StatusResult<out T> {
+    data class Success<out T>(val data: T): StatusResult<T>()
+    data class Error(val errorCode: Int, val msg: String): StatusResult<Nothing>()
+    object Loading: StatusResult<Nothing>()
+}
 ```
