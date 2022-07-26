@@ -77,3 +77,29 @@ python3 camille.py 应用包名
 python3 camille.py 应用包名 -t 3
 ```
 
+- 保存到excel
+
+```
+python3 camille.py 应用包名 -ns -f demo.xls
+```
+
+- 指定模块
+
+```
+python3 camille.py 应用包名 -u 模块名
+```
+
+模块说明：
+
+| 模块名 | 说明 |
+| --- | --- |
+| permission | 申请的权限 |
+| phone | 电话 |
+| system | 系统信息 |
+| app | 其他app信息 |
+| location | 位置信息 |
+| network | 网络信息 |
+| camera | 摄像头 |
+| bluetooth | 蓝牙 |
+
+
