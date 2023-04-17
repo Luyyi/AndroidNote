@@ -35,6 +35,7 @@
 ② Activity调用onCreate()，将布局添加到DecorView的ContentView中。
 
 </br>
+
 ### 2. 一些说明
 
 ##### ① Zygote进程

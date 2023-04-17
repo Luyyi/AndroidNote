@@ -2,7 +2,9 @@
 
 #### 1. 预览拉伸
 - 原因：相机输出尺寸和屏幕预览窗口宽高比不一致，预览图像被拉伸
-- 解决：自定义SurfaceView，根据相机尺寸重新计算宽高，调整预览窗口大小``` kotlin
+- 解决：自定义SurfaceView，根据相机尺寸重新计算宽高，调整预览窗口大小
+
+``` kotlin
 class AutoFitSurfaceView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
@@ -72,11 +74,15 @@ class AutoFitSurfaceView @JvmOverloads constructor(
 ```
 
 </br>
+
 #### 2. 拍照镜像问题
 - 前置摄像头在预览时，底层默认做了镜像翻转，保证预览时看到的画面是照镜子一样
 - 拍照获取图片时，底层没有做镜像，导致看到的画面是反的
-- 解决：利用Matrix.setScale(-1f, 1f)做左右镜像翻转``` kotlin 
-// 设置监听imageReaderScreenshot.setOnImageAvailableListener({
+- 解决：利用Matrix.setScale(-1f, 1f)做左右镜像翻转
+
+``` kotlin 
+// 设置监听
+imageReaderScreenshot.setOnImageAvailableListener({
             val image = it.acquireLatestImage()
             try {
                 val tempBitmap =
@@ -134,18 +140,29 @@ class AutoFitSurfaceView @JvmOverloads constructor(
 ```
 
 </br>
-#### 3. java.lang.IllegalStateException: maxImages (2) has already been acquired, call #close before acquiring more.- Camera2拍照不能超过2张，在onnImageAvailableListener监听中拿到Image后需要将Image关掉
 
-- onImageAvailableListener. onImageAvailable()用于接收相机图像，相机从ImageReader的队列中获取时，如果获取的Image数大于2，而中间的Image没有close，就会耗尽底层队列资源，抛出IllegalStateException- 1、拍照截图时是在子线程中完成的，由于获取到的Image需要在后面子线程里用到，这里不能直接close
+#### 3. java.lang.IllegalStateException: maxImages (2) has already been acquired, call #close before acquiring more.
+
+- Camera2拍照不能超过2张，在onnImageAvailableListener监听中拿到Image后需要将Image关掉
+
+- onImageAvailableListener. onImageAvailable()用于接收相机图像，相机从ImageReader的队列中获取时，如果获取的Image数大于2，而中间的Image没有close，就会耗尽底层队列资源，抛出IllegalStateException
+
+- 1、拍照截图时是在子线程中完成的，由于获取到的Image需要在后面子线程里用到，这里不能直接close
 - 2、由于需求调整，需要保存两张截图，最开始直接调用了两次拍照的方法，导致camera拍照超过2张没有close，后面改为拍照后保存两张截图
 
 - Image close之后再拍下一张
 
 </br>
-#### 4. Oppo手机出现的打不开摄像头问题
-- ERROR_CAMERA_DEVICE：Camera 1 error: (4) Fatal (device)  【设备遇到致命错误】
 
-- 原因：相机的previewSize设置过大，在某些机型上不适用。- 解决：遍历相机适用的输出尺寸列表，获取小一点的而且比例合适的尺寸    - Camera自带方法getPreviewOutputSize() 获取的是最大的相机支持的尺寸，通常是屏幕宽高    - 要解决这个问题，previewSize需要比最大输出尺寸getPreviewOutputSize()小    - 为了不造成预览界面的拉伸，宽高比需要和最大输出尺寸getPreviewOutputSize()的宽高比尽量一致 
+#### 4. Oppo手机出现的打不开摄像头问题
+
+- ERROR_CAMERA_DEVICE：Camera 1 error: (4) Fatal (device)  【设备遇到致命错误】
+
+- 原因：相机的previewSize设置过大，在某些机型上不适用。
+- 解决：遍历相机适用的输出尺寸列表，获取小一点的而且比例合适的尺寸
+    - Camera自带方法getPreviewOutputSize() 获取的是最大的相机支持的尺寸，通常是屏幕宽高
+    - 要解决这个问题，previewSize需要比最大输出尺寸getPreviewOutputSize()小
+    - 为了不造成预览界面的拉伸，宽高比需要和最大输出尺寸getPreviewOutputSize()的宽高比尽量一致 
 
 ```kotlin
 // 遍历找到最合适的previewSize
