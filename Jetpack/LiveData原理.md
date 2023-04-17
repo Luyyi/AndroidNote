@@ -67,6 +67,7 @@ public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super T> 
 这样完成了注册观察者的流程。而LiveData还存在`Destroy时自动注销` `活跃时才能收到数据` `黏性事件` 等特性，这些都封装在了LifecycleBoundObserver里面。
 
 </br>
+
 #### （2）事件回调
 从上面的注册流程可以看到，回调的逻辑主要封装在LifecycleBoundObserver里面。
 
@@ -168,6 +169,7 @@ private abstract class ObserverWrapper {
 这样完成了观察者事件回调流程，解答了LiveData`在DESTROYED时自动注销观察者` `活跃状态才会发送数据`的特性问题。
 
 </br>
+
 #### （3）事件分发
 
 ##### ① LiveData#dispatchingValue()
