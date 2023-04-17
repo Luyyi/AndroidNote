@@ -49,7 +49,7 @@
 
 执行过程：
 
-![](media/16582870827969/16582875417238.jpg)
+![](media/16582870827969/16582875417238.jpg)
 
     
 </br>
@@ -88,7 +88,7 @@ filter:
 
 执行过程：
 
-![](media/16582870827969/16582882990724.jpg)
+![](media/16582870827969/16582882990724.jpg)
 
 黑底的步骤不再执行。
   
@@ -110,7 +110,7 @@ fun <T : Any> generateSequence(seed: T?, nextFunction: (T) -> T?): Sequence<T>
 ```
 
 - sequence()
-    - 将任意大小的组块生成Sequence
+    - 将任意大小的组块生成Sequence
 
 ```kotlin
 sequence(@BuilderInference block: suspend SequenceScope<T>.() -> Unit): Sequence<T>
@@ -126,4 +126,10 @@ sequence {
 </br>
 
 ### 什么时候使用Sequence
+
+- 数据量大
+- 需要对数据进行频繁操作，链接多个操作符
+- 使用first，last操作符与其他操作符结合时
+- 递归中使用
+
 
