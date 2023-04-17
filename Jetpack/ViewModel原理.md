@@ -27,6 +27,7 @@ ViewModel 将一直留在内存中，直到其作用域 ViewModelStoreOwner 永�
 private val viewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
 ```
 </br>
+
 ##### ② 对应看到ViewModelProvider的构造方法
 ```kotlin
 public constructor(
@@ -36,6 +37,7 @@ public constructor(
 调用了ViewModelProvider自己的构造方法，传进去一个`ViewModelStoreOwner.viewModelStrore`，创建了默认的工厂。
 
 </br>
+
 ##### ③ 再看到ViewModelProvider#get()
 ```kotlin
 public open operator fun <T : ViewModel> get(modelClass: Class<T>): T {
@@ -68,6 +70,7 @@ public open operator fun <T : ViewModel> get(key: String, modelClass: Class<T>):
 否则，调用factory.create()，创建新的ViewModel对象。
 
 </br>
+
 ##### ④ 工厂中创建ViewModel
 
 factory.create()，factory指向的是实例化ViewModelProvider时传入的defaultFactory。
@@ -96,6 +99,7 @@ public static class NewInstanceFactory implements Factory {
 factory.create()，最终通过modelClass.newInstance()创建ViewModel实例。
 
 </br>
+
 ##### ⑤ store，存储ViewModel实例
 store，即ViewModelStore。
 ```java
@@ -133,6 +137,7 @@ ViewModelStore内部，通过HashMap来存储ViewModel对象，提供了clear()�
 ViewModelStore，在ViewModelProvider实例化时，通过`viewModelStoreOwner.viewModelStore`传入。
 
 </br>
+
 ##### ⑥ 来到ViewModelStoreOwner，就到了我们熟悉的Activity、Fragment
 ViewModelStoreOwner是一个接口。
 ```java
@@ -143,6 +148,7 @@ public interface ViewModelStoreOwner {
 }
 ```
 </br>
+
 继续追踪，发现ComponentActivity实现了这个接口。
 ```java
 @NonNull
@@ -153,7 +159,9 @@ public ViewModelStore getViewModelStore() {
     return mViewModelStore;
 }
 ```
+
 </br>
+
 ensureViewModelStore()，顾名思义是确保ViewModelStore不为空的方法。
 ```java
 void ensureViewModelStore() {
@@ -172,6 +180,7 @@ void ensureViewModelStore() {
 ```
 
 </br>
+
 ##### ⑦ Activity中UI数据存储与获取
 从`ensureViewModelStore()`中看到，Activity先调用`getLastNonConfigurationInstance()`获取NonConfigurationInstances对象，nc不为空则获取nc中的viewModelStore，nc为空则创建新的ViewModelStore对象。
 
@@ -188,6 +197,7 @@ public Object getLastNonConfigurationInstance() {
 所以，这个方法的作用就是获取存储的数据。
 
 </br>
+
 ###### 再看到Activity#onRetainNonConfigurationInstance 
 ```java 
 public Object onRetainNonConfigurationInstance() {
@@ -199,6 +209,7 @@ public Object onRetainNonConfigurationInstance() {
 所以，这个方法的作用是在Activity销毁时存储信息。
 
 </br>
+
 ###### 再到ComponentActivity#onRetainNonConfigurationInstance
 
 ```java
@@ -232,6 +243,7 @@ public final Object onRetainNonConfigurationInstance() {
 ```
 
 </br>
+
 ##### ⑧ 数据的释放
 
 ComponentActivity中，监听了Activity的生命周期，在ON_DESTROY的时候，调用了viewModelStore的clear()，将保存的viewModel对象全部清空。
