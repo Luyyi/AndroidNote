@@ -91,6 +91,7 @@ class SingleEventLiveData<T> : MutableLiveData<T>() {
 ```
 
 </br>
+
 - 创建仅发送一次更新的LiveData，使observer的onChanged方法只调用一次
 
 - setValue()时AtomicBoolean对象mPending设为true
